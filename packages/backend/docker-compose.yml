@@ -9,10 +9,3 @@ services:
     volumes:
       - ./docker-data/redis:/data
 
-  redis-insight:
-    image: redis/redisinsight:latest
-    restart: always
-    ports:
-      - 5540:5540
-    volumes:
-      - ./docker-data/redis-insight:/data

@@ -12,7 +12,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get(
-    "/spotify-backend/:month",
+    "/:month",
     async (req: Request<{ month: Month }>, res) => {
         const { month }: { month: Month } = req.params;
         const response = await getCheapest(month);
