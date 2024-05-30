@@ -13,8 +13,13 @@ services:
     build:
         context: "./packages/backend"
     restart: always
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     ports:
         - 5000:5000
+    depends_on:
+      - redis
 
   bot:
     build:

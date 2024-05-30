@@ -6,8 +6,8 @@ class RedisSingleton {
 
     private constructor() {
         this._redis = new Redis({
-            host: "localhost",
-            port: 6379,
+            host: process.env.REDIS_HOST as string,
+            port: parseInt(process.env.REDIS_PORT || "6379", 10),
         });
     }
 

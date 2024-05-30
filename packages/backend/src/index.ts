@@ -12,8 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 const limiter = rateLimit({
-    windowMs: 1 * 60 * 1000,
-    limit: 2,
+    windowMs: 2,
+    limit: 5,
     standardHeaders: "draft-7",
     legacyHeaders: false,
 });
