@@ -53,6 +53,9 @@ importers:
 
   packages/telegram-bot:
     dependencies:
+      axios:
+        specifier: ^1.6.8
+        version: 1.6.8
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5

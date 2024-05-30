@@ -1,0 +1,25 @@
+version: '3.1'
+
+services:
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - 6379:6379
+    volumes:
+      - ./docker-data/redis:/data
+
+  backend:
+    build:
+        context: "./packages/backend"
+    restart: always
+    ports:
+        - 5000:5000
+
+  bot:
+    build:
+      context: "./packages/telegram-bot"
+    restart: always
+
+    env_file:
+      - .env
