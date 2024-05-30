@@ -1,7 +1,7 @@
 import express, { Request } from "express";
 import cors from "cors";
 
-import Redis from "ioredis";
+import { rateLimit } from "express-rate-limit";
 
 import { Month, getCheapest } from "./getCheapest";
 
@@ -11,17 +11,22 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-app.get(
-    "/:month",
-    async (req: Request<{ month: Month }>, res) => {
-        const { month }: { month: Month } = req.params;
-        const response = await getCheapest(month);
+const limiter = rateLimit({
+    windowMs: 1 * 60 * 1000,
+    limit: 2,
+    standardHeaders: "draft-7",
+    legacyHeaders: false,
+});
+app.use(limiter);
 
-        res.json({
-            ...response,
-        });
-    }
-);
+app.get("/:month", async (req: Request<{ month: Month }>, res) => {
+    const { month }: { month: Month } = req.params;
+    const response = await getCheapest(month);
+
+    res.json({
+        ...response,
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
