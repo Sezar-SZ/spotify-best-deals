@@ -12,6 +12,8 @@ cron.schedule("*/20 * * * *", () => {
     getAllCheapest();
 });
 
+getAllCheapest();
+
 export async function getAllCheapest() {
     try {
         await getCheapest("1");
