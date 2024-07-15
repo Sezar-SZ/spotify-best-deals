@@ -38,10 +38,13 @@ bot.on("message", async (msg) => {
             const { data } = await axios.get(
                 `${process.env.BACKEND_URL}/${selectedOption.value}`
             );
-            bot.sendMessage(
-                chatId,
-                `Cheapest Price is ${data.price} for Country ${data.countryCode}`
-            );
+            if (!data.price || !data.countryCode) {
+                bot.sendMessage(chatId, "please try again later");
+            } else
+                bot.sendMessage(
+                    chatId,
+                    `${data.price} for ${data.countryCode}`
+                );
         } catch (error) {
             console.error("Error fetching data:", error);
             bot.sendMessage(

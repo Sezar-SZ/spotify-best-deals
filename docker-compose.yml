@@ -9,7 +9,7 @@ services:
     volumes:
       - ./docker-data/redis:/data
 
-  backend:
+  api:
     build:
         context: "./packages/backend"
     restart: always
@@ -28,3 +28,20 @@ services:
 
     env_file:
       - .env
+
+  fetcher:
+    build:
+      context: "./packages/telegram-bot"
+    restart: always
+
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+  # redis-insight:
+  #   image: redis/redisinsight:latest
+  #   restart: always
+  #   ports:
+  #     - 5540:5540
+  #   volumes:
+  #     - ./docker-data/redis-insight:/data
