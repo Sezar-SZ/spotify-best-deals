@@ -11,7 +11,7 @@ services:
 
   api:
     build:
-        context: "./packages/backend"
+        context: "./packages/api"
     restart: always
     environment:
       REDIS_HOST: redis
@@ -31,7 +31,7 @@ services:
 
   fetcher:
     build:
-      context: "./packages/telegram-bot"
+      context: "./packages/fetcher"
     restart: always
 
     environment:
