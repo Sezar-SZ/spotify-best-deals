@@ -7,7 +7,7 @@ const redis = new Redis({
     port: parseInt(process.env.REDIS_PORT || "6379", 10),
 });
 
-cron.schedule("*/20 * * * *", () => {
+cron.schedule("*/60 * * * *", () => {
     console.log("Running scheduled task...");
     getAllCheapest();
 });
