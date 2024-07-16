@@ -38,15 +38,20 @@ async function getCheapest(month) {
         prices.push({ countryCode, price });
     }
 
-    const sanitizedPrices = prices.filter((price) => price.price > 0);
+    const sanitizedPrices = prices.filter(
+        (price) => price.price && price.price > 0
+    );
 
     const cheapest = sanitizedPrices.sort((a, b) => a.price - b.price)[0];
-    const coinPrice = await getCoinPrice("LTC");
-    cheapest.price = "$" + (coinPrice * cheapest.price).toFixed(2);
 
-    console.log(cheapest);
+    if (cheapest.price) {
+        const coinPrice = await getCoinPrice("LTC");
+        cheapest.price = "$" + (coinPrice * cheapest.price).toFixed(2);
 
-    await redis.set(`cheapest-${month}`, JSON.stringify(cheapest));
+        console.log(cheapest);
+
+        await redis.set(`cheapest-${month}`, JSON.stringify(cheapest));
+    }
 }
 
 async function getCountriesList() {
