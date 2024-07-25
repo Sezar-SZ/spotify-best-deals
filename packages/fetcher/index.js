@@ -8,7 +8,6 @@ const redis = new Redis({
 });
 
 cron.schedule("*/60 * * * *", () => {
-    console.log("Running scheduled task...");
     getAllCheapest();
 });
 
@@ -30,10 +29,8 @@ async function getCheapest(month) {
     const countriesList = await getCountriesList();
     const prices = [];
 
-    console.log(`fetching for ${month} month`);
-
     for (const countryCode of countriesList) {
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         const price = await getPrice(countryCode, month, "LTC");
         prices.push({ countryCode, price });
     }
@@ -48,9 +45,8 @@ async function getCheapest(month) {
         const coinPrice = await getCoinPrice("LTC");
         cheapest.price = "$" + (coinPrice * cheapest.price).toFixed(2);
 
-        console.log(cheapest);
-
-        await redis.set(`cheapest-${month}`, JSON.stringify(cheapest));
+        if (cheapest.price)
+            await redis.set(`cheapest-${month}`, JSON.stringify(cheapest));
     }
 }
 
@@ -62,7 +58,6 @@ async function getCountriesList() {
 
         return data.countries;
     } catch (error) {
-        console.log(error);
         return [];
     }
 }
@@ -73,7 +68,6 @@ async function getPrice(countryCode, month, coin) {
             `https://backend.coinsbee.com/api/v1/products/list/Spotify/${countryCode}/en/
             `
         );
-        console.log("requesting");
 
         const result = data.results.find((result) =>
             result.name.startsWith(`Spotify ${month} Month`)
@@ -91,16 +85,19 @@ async function getPrice(countryCode, month, coin) {
         }
         return "-1";
     } catch (error) {
-        console.log(error);
         return "-1";
     }
 }
 
 async function getCoinPrice(coin) {
+    const cachedPrice = await redis.get("ltc-price");
+    if (cachedPrice) return cachedPrice;
+
     const { data } = await axios.get(
         `https://open-api.bingx.com/openApi/swap/v2/quote/ticker?symbol=${coin}-USDT`
     );
 
     const newPrice = data.data.lastPrice;
+    await redis.set("ltc-price", newPrice, "EX", 60 * 60 * 2);
     return newPrice;
 }
